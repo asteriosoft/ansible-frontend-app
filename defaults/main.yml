@@ -1,0 +1,11 @@
+---
+frontend_app_name: "frontend-app"
+frontend_app_home_dir: "/var/www/ui/content/"
+
+frontend_app_archive_source: "local" # local/http supported
+
+frontend_app_archive_local_path: "../files/{{ frontend_app_name }}.tar.gz"
+
+frontend_app_http_download_url: "https://artifactory/artifactory/ui-frontend-snapshot/example/latest/build.tar.gz"
+frontend_app_http_basic_user: "user"
+frontend_app_http_basic_password: "password"

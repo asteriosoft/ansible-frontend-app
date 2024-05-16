@@ -1,0 +1,41 @@
+---
+- name: Create application home directory
+  file:
+    path: "{{ frontend_app_home_dir }}"
+    state: directory
+    owner: "root"
+    group: "root"
+    mode: 0755
+
+- name: Download frontend archive from http url
+  get_url:
+    url: "{{ frontend_app_http_download_url }}"
+    dest: "/tmp/{{ frontend_app_name }}.tar.gz"
+    force: yes
+    url_username: "{{ frontend_app_http_basic_user }}"
+    url_password: "{{ frontend_app_http_basic_password }}"
+  when: frontend_app_archive_source == "http"
+
+- name: Copy frontend archive from local FS
+  copy:
+    src: "{{ frontend_app_archive_local_path }}"
+    dest: "/tmp/{{ frontend_app_name }}.tar.gz"
+    mode: 0644
+    owner: "root"
+    group: "root"
+  when: frontend_app_archive_source == "local"
+  ignore_errors: "{{ ansible_check_mode }}"
+
+- name: Delete directory with static files
+  file:
+    path: "{{ frontend_app_home_dir }}static/"
+    state: absent
+
+- name: Extract files
+  unarchive:
+    src: "/tmp/{{ frontend_app_name }}.tar.gz"
+    dest: "{{ frontend_app_home_dir }}"
+    owner: "root"
+    group: "root"
+    remote_src: yes
+  ignore_errors: "{{ ansible_check_mode }}"
